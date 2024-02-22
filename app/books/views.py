@@ -80,30 +80,21 @@ def create_book_viaform():
 
 
 
-# @book_blueprint.route('/updateform/<int:id>', methods=['GET', 'POST'], endpoint='updateform')
-# def update_book(id):
-#     book = Book.query.get_or_404(id)
-#     form = BookForm(obj=book)
-#     if form.validate_on_submit():
-#         form.populate_obj(book)
-#         db.session.commit()
-#         flash('Book updated successfully', 'success')
-#         return redirect(url_for('books.index'))
-#     return render_template('book/updateform.html', form=form, book=book)
+@book_blueprint.route('/updateform/<int:id>', methods=['GET', 'POST'], endpoint='updateform')
+def update_book(id):
+    book = Book.query.get_or_404(id)
+    form = BookForm(obj=book)
+    if form.validate_on_submit():
+        category_id = form.category_id.data.id
+        
+        book.name = form.name.data
+        book.price = form.price.data
+        book.NumberPage = form.NumberPage.data
+        book.image = form.image.data
+        book.category_id = category_id 
+        
+        db.session.commit()
+        flash('Book updated successfully', 'success')
+        return redirect(url_for('books.show', id=book.id))
+    return render_template('book/updateform.html', form=form, book=book)
 
-
-# @book_blueprint.route("/updateform/<int:id>", methods=['GET', 'POST'], endpoint='updateform')
-# def update_book_form(id):
-#     book = Book.query.get_or_404(id)
-#     form = BookForm(obj=book)
-#     if form.validate_on_submit():
-#         book.name = form.name.data
-#         book.price = form.price.data
-#         book.NumberPage = form.NumberPage.data
-#         book.image = form.image.data
-#         book.category_id = form.category_id.data.id  # Assuming category_id is a ForeignKey field
-#         book.updated_at = datetime.utcnow()
-#         db.session.commit()
-#         flash('Book updated successfully', 'success')
-#         return redirect(url_for('books.show', id=book.id))
-#     return render_template('book/update.html', form=form, book=book)
